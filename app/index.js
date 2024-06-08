@@ -1,4 +1,4 @@
-// Importa el módulo express para crear el servidor
+// Importa el módulo express desde la biblioteca express para crear el servidor
 import express from "express";
 // Importa el middleware cookie-parser para manejar cookies
 import cookieParser from 'cookie-parser';
@@ -14,10 +14,10 @@ import { methods as authentication } from "./controllers/authentication.controll
 import { methods as authorization } from "./middlewares/authorization.js";
 
 // Inicializa la aplicación de express
-const app = express();
-app.set("port", 4000); // Configura el puerto en 4000
-app.listen(app.get("port")); // Inicia el servidor en el puerto configurado
-console.log("Servidor corriendo en puerto", app.get("port"));
+const app = express(); // Importa el módulo 'express' y lo asigna a la constante 'app'
+app.set("port", 4000); // Configura la aplicación para que use el puerto 4000
+app.listen(app.get("port")); // Inicia el servidor para que escuche en el puerto configurado
+console.log("Servidor corriendo en puerto", app.get("port")); // Imprime un mensaje en la consola indicando que el servidor está corriendo y en qué puerto
 
 // Configuración de middlewares
 app.use(express.static(__dirname + "/public")); // Sirve archivos estáticos desde el directorio "public"
