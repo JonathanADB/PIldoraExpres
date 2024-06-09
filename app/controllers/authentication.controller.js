@@ -35,30 +35,31 @@ async function login(req, res) {
   // Comparar la contraseña proporcionada con la contraseña hasheada almacenada
   const loginCorrecto = await bcryptjs.compare(password, usuarioAResvisar.password);
   
-  // Verificar si la contraseña es correcta
-  if (!loginCorrecto) {
+  // Verifica si la comparación de la contraseña fue incorrecta
+if (!loginCorrecto) {
+    // Si la contraseña no coincide, envía una respuesta de error 400 con un mensaje
     return res.status(400).send({status: "Error", message: "Error durante login"});
-  }
-  
-  // Generar un token JWT con el nombre de usuario como payload
-  const token = jsonwebtoken.sign(
-    {user: usuarioAResvisar.user},
-    process.env.JWT_SECRET, // Clave secreta para firmar el token
-    {expiresIn: process.env.JWT_EXPIRATION} // Configuración de expiración del token
-  );
-
-  // Opciones para la cookie que almacenará el token
-  const cookieOption = {
-    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000), // Fecha de expiración de la cookie
-    path: "/" // Ruta en la que la cookie es válida
-  };
-  
-  // Enviar la cookie al cliente
-  res.cookie("jwt", token, cookieOption);
-  
-  // Responder al cliente con éxito
-  res.send({status: "ok", message: "Usuario loggeado", redirect: "/admin"});
 }
+
+// Genera un token JWT para el usuario autenticado
+const token = jsonwebtoken.sign(
+    { user: usuarioARevisar.user }, // Payload del token, contiene el nombre de usuario
+    process.env.JWT_SECRET,         // Clave secreta para firmar el token
+    { expiresIn: process.env.JWT_EXPIRATION } // Tiempo de expiración del token
+);
+
+// Configura las opciones de la cookie que contendrá el token JWT
+const cookieOption = {
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000), // Fecha de expiración de la cookie
+    path: "/" // Ruta en la que la cookie estará disponible
+};
+
+// Establece una cookie llamada 'jwt' en la respuesta con el token JWT generado y las opciones configuradas
+res.cookie("jwt", token, cookieOption);
+
+// Envía una respuesta indicando que el usuario ha iniciado sesión correctamente y redirige a /admin
+res.send({ status: "ok", message: "Usuario loggeado", redirect: "/admin" });
+} 
 
 // Función de registro (register)
 async function register(req, res) {
